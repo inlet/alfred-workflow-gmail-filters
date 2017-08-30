@@ -1,0 +1,14 @@
+{
+  "name": "gmail-api-filters",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "postinstall": "echo $PATH >> .path-env"
+  },
+  "dependencies": {
+    "commander": "^2.11.0",
+    "google-auth-library": "^0.10.0",
+    "googleapis": "^21.3.0"
+  }
+}
