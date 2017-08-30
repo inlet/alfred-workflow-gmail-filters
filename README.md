@@ -1,6 +1,8 @@
 # Alfred Workflow - Manage Gmail Filters
 
 ![](https://user-images.githubusercontent.com/232559/29885279-8761bab6-8db6-11e7-980f-c233b25a24ae.png)
+
+ 
 Tired of getting spam in your mailbox? Setting up filters the conventional way (via gmail.com > settings > filters) is quite cumbersome. The amount of time and effort keeps me away from doing so. 
 
 That's way I created a simple Alfred Workflow that does this for you using `Google API` over `Oauth2` authentication.
