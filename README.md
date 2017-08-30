@@ -1,47 +1,51 @@
 # Alfred Workflow - Manage Gmail Filters
 
-## Install
+![](https://user-images.githubusercontent.com/232559/29885279-8761bab6-8db6-11e7-980f-c233b25a24ae.png)
+Tired of getting spam in your mailbox? Setting up filters the conventional way (via gmail.com > settings > filters) is quite cumbersome. The amount of time and effort keeps me away from doing so. 
 
-    yarn install https://github.com/inlet/alfred-workflow-gmail-filters ~/.alfred-workflow-gmail-filters
+That's way I created a simple Alfred Workflow that does this for you using `Google API` over `Oauth2` authentication.
 
-## Creating API credentials
+## Requirements
 
-Head to [Google API Console > Dashboard](https://console.developers.google.com/apis)
+- Node installed and available globally (`$PATH`)
+- Alfred Version 3.
+- The Alfred Powerpack.
+- A Google account (with Gmail)
+- [GmailFilters.alfredworkflow](https://github.com/inlet/alfred-workflow-gmail-filters/blob/master/GmailFilters.alfredworkflow?raw=true).
 
-- `Dashboard` > `Enable APIS AND SERVICES`
-- Select `Gmail API` and click on `enable`
+## Setup
 
-Setting up credentials
+This workflow requires API access to Google API. This requires an access token (oauth2). Follow these steps to create and configure this token into the workflow.
 
-- `Credentials` > `OAuth consent screen`
-- Fill in email and product name
+1. Install binary
 
-- `Credentials` > `Credentials` > Create credentials > Oauth client ID
-- Other > Give it a name and click on `Create`
+       git clone https://github.com/inlet/alfred-workflow-gmail-filters ~/.alfred-workflow-gmail-filters
+       cd ~/.alfred-workflow-gmail-filters
+       npm install
+    
+2. Authenticate with credentials
 
-Download the `client_secret.json` into `~/.alfred-workflow-gmail-filters`
+   Head to [Google API Console > Dashboard](https://console.developers.google.com/apis) and create oath2 credentials.
+   Checkout [Step 1: Node Quickstart Tutorial](https://developers.google.com/gmail/api/quickstart/nodejs) for more details.
 
-- Click on the Download JSON icon (most right)
-- Store it as client_secret.json in ~/.alfred-workflow-gmail-filters
+   Once created, download the `client_secret.json` into `~/.alfred-workflow-gmail-filters` and run:
 
-## Use API credentials for alfred workflow
+       node ~/.alfred-workflow-gmail-filters/index.js --list
+    
+   Copy/paste the url in your browser and create the access token for your Google account. Copy/paste the token into the terminal again and hit `ENTER` to finish to authentication.
 
-- run `node ~/.alfred-workflow-gmail-filters/index.js --list`
-- copy / paste url (shown in terminal) in browser
-- select google account to manage filters for > allow
-- copy / paste the token in terminal > ENTER
+    > It stores the token in `token.json` for future requests.
 
+   If everything worked out, you should see the enabled filters listed. With this in place, you can now easily manage gmail filters:
 
-Now it should list all enabled filters for your google account.
+   See `node ~/.alfred-workflow-gmail-filters/index.js --help` for usage.
 
-See `node ~/.alfred-workflow-gmail-filters/index.js --help` for usage.
+3. Install the workflow
 
-## Install alfred workflow
-
-Double click on `GmailFilters.alfredworkflow`
+   Double click on `GmailFilters.alfredworkflow`. Download [here](https://github.com/inlet/alfred-workflow-gmail-filters/blob/master/GmailFilters.alfredworkflow?raw=true)
 
 ## Usage
 
-Type in alfred: `spam example@mail.com`
+In Alfred, type: `spam example@mail.com`
 
-You should see a notification that the filter is added. Head to gmail settings (gmail.com) and check if the filter is added.
+You should see a notification that the filter is added. Head to [gmail settings](https://gmail.com) and check if the filter is actually added.
