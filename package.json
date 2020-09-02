@@ -9,6 +9,6 @@
   "dependencies": {
     "commander": "^2.11.0",
     "google-auth-library": "^0.10.0",
-    "googleapis": "^21.3.0"
+    "googleapis": "^39.1.0"
   }
 }
