@@ -1,17 +1,18 @@
 #!/usr/bin/env node
 
-const fs         = require('fs'),
-      path       = require('path'),
-      readline   = require('readline'),
-      google     = require('googleapis'),
-      GoogleAuth = require('google-auth-library'),
-      program    = require('commander')
+const fs           = require('fs'),
+      path         = require('path'),
+      readline     = require('readline'),
+      google       = require('googleapis').google,
+      OAuth2Client = require('google-auth-library').OAuth2Client,
+      program      = require('commander')
 
 const SECRET_PATH = path.resolve(__dirname, 'client_secret.json'),
       TOKEN_PATH  = path.resolve(__dirname, 'token.json'),
       SCOPES      = ['https://www.googleapis.com/auth/gmail.settings.basic']
 
-const filters = google.gmail('v1').users.settings.filters
+const gmail = google.gmail('v1');
+const filters = gmail.users.settings.filters
 
 const question = (interface, msg) => new Promise(resolve => {
   interface.question(msg, response => resolve(response))
@@ -20,8 +21,7 @@ const question = (interface, msg) => new Promise(resolve => {
 async function authorize(credentials) {
   let { client_secret: clientSecret, client_id: clientId, redirect_uris: [redirectUrl] } = credentials.installed
 
-  const auth = new GoogleAuth()
-  const oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl)
+  const oauth2Client = new OAuth2Client(clientId, clientSecret, redirectUrl)
 
   let token
 
@@ -96,14 +96,19 @@ const createFilter = (oauth2Client, criteria, action) => new Promise((resolve, r
 
 // start
 async function start() {
+  program
+    .storeOptionsAsProperties(false)
+    .passCommandToAction(false);
+
   // setup program
   program
     .version('1.0.0')
+    .name('alfred-gmail-filters')
     .description('Manage Gmail Filters')
-    .option('-l --list', 'List all filters')
-    .option('-c, --criteria [from|to|subject|query|negatedQuery|hasAttachment|excludeChats|size|sizeComparison]',
+    .option('-l,--list', 'List all filters')
+    .option('-c,--criteria [from|to|subject|query|negatedQuery|hasAttachment|excludeChats|size|sizeComparison]',
       'Set criteria')
-    .option('-a --action [addLabelIds|removeLabelIds|forward]', 'Define action')
+    .option('-a,--action [addLabelIds|removeLabelIds|forward]', 'Define action')
 
   program.on('--help', function() {
     console.log('')
@@ -121,21 +126,21 @@ async function start() {
   })
 
   program.parse(process.argv)
+  const options = program.opts();
 
   const clientSecret = JSON.parse(fs.readFileSync(SECRET_PATH, 'utf8'))
 
   // authorize app
   const oauth2Client = await authorize(clientSecret)
-
-  if (program.list) {
+  if (options.list) {
     const filters = await getFilters(oauth2Client)
     console.log(JSON.stringify(filters, null, 2))
     return
   }
 
-  if (program.criteria && program.action) {
-    let criteria = JSON.parse(program.criteria)
-    let action = JSON.parse(program.action)
+  if (options.criteria && options.action) {
+    let criteria = JSON.parse(options.criteria)
+    let action = JSON.parse(options.action)
 
     const response = await createFilter(oauth2Client, criteria, action)
     console.log(response)
